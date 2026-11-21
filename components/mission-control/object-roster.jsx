@@ -76,12 +76,14 @@ export function ObjectRoster({
                 disabled={!visible}
                 onClick={() => onSelect(selected ? null : obj.id)}
                 aria-expanded={selected}
-                className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors disabled:cursor-not-allowed ${
+                className={`group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors disabled:cursor-not-allowed ${
                   selected ? 'bg-navy/80' : 'hover:bg-foreground/[0.03]'
                 }`}
               >
                 <span
-                  className={`flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-space ${style.textClass}`}
+                  className={`icon-pop flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-space ${style.textClass} ${
+                    selected ? 'icon-pop-on' : ''
+                  }`}
                 >
                   <Icon className="size-4" aria-hidden="true" />
                 </span>

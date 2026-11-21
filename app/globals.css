@@ -115,3 +115,45 @@
 .orbi-credits a {
   color: rgb(139 152 177 / 0.9) !important;
 }
+
+/* Icon "pop": springy scale + soft glow on hover, keyboard focus and touch press. */
+.icon-pop {
+  transition:
+    transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 320ms ease,
+    border-color 320ms ease,
+    color 200ms ease,
+    background-color 200ms ease;
+  will-change: transform;
+}
+.icon-pop:hover,
+.icon-pop:active,
+.icon-pop:focus-visible,
+.group:hover .icon-pop,
+.group:active .icon-pop,
+.group:focus-visible .icon-pop,
+.icon-pop-on {
+  transform: scale(1.22) translateY(-1px);
+  border-color: currentColor;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, currentColor 25%, transparent),
+    0 6px 18px -4px color-mix(in oklab, currentColor 55%, transparent);
+}
+.group:disabled .icon-pop {
+  transform: none;
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .icon-pop {
+    transition: box-shadow 200ms ease, border-color 200ms ease;
+  }
+  .icon-pop:hover,
+  .icon-pop:active,
+  .icon-pop:focus-visible,
+  .group:hover .icon-pop,
+  .group:active .icon-pop,
+  .group:focus-visible .icon-pop,
+  .icon-pop-on {
+    transform: none;
+  }
+}
