@@ -78,7 +78,10 @@ export function ConjunctionAlerts({ conjunctions, objectsById, activeId, onInspe
                   </span>
 
                   <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground transition-colors group-hover:text-signal">
-                    <Crosshair className="size-3.5" aria-hidden="true" />
+                    <Crosshair
+                      className="size-3.5 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-150 group-hover:rotate-90 group-active:scale-150 group-focus-visible:scale-150"
+                      aria-hidden="true"
+                    />
                     <span className="hidden sm:inline">Inspect</span>
                   </span>
                 </button>

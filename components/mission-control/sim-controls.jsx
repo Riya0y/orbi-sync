@@ -92,7 +92,7 @@ function IconButton({ label, onClick, children, emphasis = false, active = false
       aria-label={label}
       title={label}
       aria-pressed={active || undefined}
-      className={`flex size-8 items-center justify-center rounded-md border transition-colors ${
+      className={`icon-pop flex size-8 items-center justify-center rounded-md border transition-colors ${
         emphasis
           ? 'border-signal/40 bg-signal/10 text-signal hover:bg-signal/20'
           : active

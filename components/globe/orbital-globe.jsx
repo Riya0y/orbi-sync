@@ -149,6 +149,16 @@ export function OrbitalGlobe({
             position.addSample(time, toEarthFixed(positionEci(obj.orbit, t), time))
           }
 
+          // Eased "pop" factor: 0 at rest, 1 when hovered/touched. Easing it per
+          // frame makes the marker grow smoothly instead of jumping in size.
+          let pop = 0
+          const popAmount = () => {
+            const s = live.current
+            const target = s.hoverId === obj.id ? 1 : 0
+            pop += (target - pop) * 0.18
+            return pop
+          }
+
           viewer.entities.add({
             id: obj.id,
             name: obj.name,
@@ -157,7 +167,8 @@ export function OrbitalGlobe({
               image: getObjectIcon(obj.type, style.hex),
               scale: new Cesium.CallbackProperty(() => {
                 const s = live.current
-                let scale = s.selectedId === obj.id ? 0.62 : s.hoverId === obj.id ? 0.56 : 0.46
+                let scale = s.selectedId === obj.id ? 0.62 : 0.46
+                scale += popAmount() * 0.38
                 if (inActiveConjunction(obj.id)) scale += pulse() * 0.12
                 return scale
               }, false),
@@ -170,7 +181,7 @@ export function OrbitalGlobe({
               backgroundColor: Cesium.Color.fromCssColorString('#02040a').withAlpha(0.6),
               backgroundPadding: new Cesium.Cartesian2(6, 3),
               pixelOffset: new Cesium.Cartesian2(0, -32),
-              scale: 1,
+              scale: new Cesium.CallbackProperty(() => 1 + pop * 0.2, false),
             },
             path: {
               leadTime: 0,
@@ -279,17 +290,22 @@ export function OrbitalGlobe({
         })
 
         const input = new Cesium.ScreenSpaceEventHandler(scene.canvas)
-        input.setInputAction((movement) => {
-          const picked = scene.pick(movement.endPosition)
+        const hoverAt = (screenPosition) => {
+          const picked = scene.pick(screenPosition)
           const id = Cesium.defined(picked) ? baseId(picked.id) : null
-          live.current.hoverId = id
+          live.current.hoverId = id && !id.startsWith('cnj-') ? id : null
           scene.canvas.style.cursor = id ? 'pointer' : 'grab'
-        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+        }
+        input.setInputAction((movement) => hoverAt(movement.endPosition), Cesium.ScreenSpaceEventType.MOUSE_MOVE)
         const markInteraction = () => {
           live.current.lastInteraction = performance.now()
         }
+        // Touch screens have no hover, so a tap also triggers the pop effect.
+        input.setInputAction((event) => {
+          markInteraction()
+          hoverAt(event.position)
+        }, Cesium.ScreenSpaceEventType.LEFT_DOWN)
         for (const type of [
-          Cesium.ScreenSpaceEventType.LEFT_DOWN,
           Cesium.ScreenSpaceEventType.RIGHT_DOWN,
           Cesium.ScreenSpaceEventType.MIDDLE_DOWN,
           Cesium.ScreenSpaceEventType.WHEEL,
